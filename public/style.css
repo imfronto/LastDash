@@ -6,51 +6,61 @@
 
 :root {
   /* -- surfaces -- */
-  --bg: #0b0e14;
-  --bg-elevated: #10151f;
-  --bg-card: #131a26;
-  --bg-card-hover: #16202f;
-  --border-color: #232b3d;
-  --border-color-strong: #2f3a52;
+  --bg: #090b12;
+  --bg-elevated: #0e1220;
+  --bg-card: #121727;
+  --bg-card-hover: #182036;
+  --bg-inset: #0b0e18;
+  --border-color: #212a42;
+  --border-color-strong: #34406866;
+  --border-hairline: rgba(255, 255, 255, 0.05);
 
   /* -- text -- */
-  --text-primary: #e6edf3;
-  --text-secondary: #8b95a7;
-  --text-muted: #5c6577;
+  --text-primary: #edf1f9;
+  --text-secondary: #8e9ab8;
+  --text-muted: #566082;
 
   /* -- state colors -- */
-  --color-good: #39ff88;
-  --color-good-dim: rgba(57, 255, 136, 0.16);
-  --color-warn: #ffb347;
-  --color-warn-dim: rgba(255, 179, 71, 0.16);
-  --color-bad: #ff4d5e;
-  --color-bad-dim: rgba(255, 77, 94, 0.16);
-  --color-neutral: #6b7385;
-  --color-neutral-dim: rgba(107, 115, 133, 0.16);
+  --color-good: #34e0a1;
+  --color-good-dim: rgba(52, 224, 161, 0.14);
+  --color-warn: #f5b942;
+  --color-warn-dim: rgba(245, 185, 66, 0.14);
+  --color-bad: #ff5d70;
+  --color-bad-dim: rgba(255, 93, 112, 0.14);
+  --color-neutral: #6b76a0;
+  --color-neutral-dim: rgba(107, 118, 160, 0.14);
 
-  /* -- glow -- */
-  --glow-good: 0 0 6px rgba(57, 255, 136, 0.55), 0 0 16px rgba(57, 255, 136, 0.25);
-  --glow-warn: 0 0 6px rgba(255, 179, 71, 0.55), 0 0 16px rgba(255, 179, 71, 0.25);
-  --glow-bad: 0 0 6px rgba(255, 77, 94, 0.55), 0 0 16px rgba(255, 77, 94, 0.25);
-  --glow-neutral: 0 0 4px rgba(107, 115, 133, 0.35);
+  /* -- glow (used sparingly, on state indicators only) -- */
+  --glow-good: 0 0 10px rgba(52, 224, 161, 0.4);
+  --glow-warn: 0 0 10px rgba(245, 185, 66, 0.4);
+  --glow-bad: 0 0 10px rgba(255, 93, 112, 0.4);
+  --glow-neutral: 0 0 6px rgba(107, 118, 160, 0.2);
 
   /* -- accent (brand) -- */
-  --accent: #39ffe1;
-  --accent-dim: rgba(57, 255, 225, 0.15);
+  --accent: #35d7e6;
+  --accent-soft: #8ceaf0;
+  --accent-dim: rgba(53, 215, 230, 0.14);
+  --glow-accent: 0 0 12px rgba(53, 215, 230, 0.4);
+
+  /* -- elevation -- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.38);
+  --shadow-lg: 0 14px 40px rgba(0, 0, 0, 0.5);
+  --inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
   /* -- typography -- */
   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Consolas, monospace;
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   /* -- layout -- */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-sm: 7px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
   --gap: 1rem;
 
   /* -- motion -- */
   --transition-fast: 150ms ease;
-  --transition-med: 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-med: 260ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==========================================================================
@@ -70,14 +80,38 @@ body {
 
 body {
   margin: 0;
+  position: relative;
+  isolation: isolate;
   background: var(--bg);
-  background-image: radial-gradient(circle at 20% -10%, rgba(57, 255, 225, 0.06), transparent 40%),
-    radial-gradient(circle at 80% 0%, rgba(57, 255, 136, 0.05), transparent 45%);
-  background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-sans);
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+/* soft brand-colored glow washes, plus a faint schematic grid — pure CSS,
+   no assets — for a "control room" feel without fighting legibility */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: radial-gradient(ellipse 1100px 620px at 12% -12%, rgba(53, 215, 230, 0.09), transparent 60%),
+    radial-gradient(ellipse 900px 520px at 88% -6%, rgba(52, 224, 161, 0.06), transparent 55%),
+    var(--bg);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.5;
+  background-image: linear-gradient(var(--border-hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-hairline) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
 }
 
 h1,
@@ -104,8 +138,11 @@ input {
   justify-content: space-between;
   gap: var(--gap);
   padding: 1.25rem 1.5rem;
-  background: linear-gradient(180deg, var(--bg-elevated), var(--bg));
+  background: rgba(14, 18, 32, 0.72);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
   border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -114,19 +151,31 @@ input {
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
 }
 
 .brand-glyph {
-  color: var(--accent);
-  font-size: 1.4rem;
-  text-shadow: 0 0 8px var(--accent), 0 0 18px var(--accent-dim);
+  position: relative;
+  display: inline-flex;
+  color: var(--color-good);
+  font-size: 1.15rem;
+  text-shadow: var(--glow-good);
   line-height: 1;
+}
+
+.brand-glyph::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid var(--color-good);
+  opacity: 0;
+  animation: ping 2.6s ease-out infinite;
 }
 
 .brand-title {
   font-size: 1.35rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -145,7 +194,7 @@ input {
 .health-strip {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 .health-metric {
@@ -160,7 +209,7 @@ input {
   grid-row: 1;
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--text-muted);
   text-transform: uppercase;
 }
@@ -168,7 +217,7 @@ input {
 .health-value {
   grid-row: 1;
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--text-primary);
   transition: color var(--transition-med);
@@ -179,17 +228,19 @@ input {
   grid-row: 2;
   display: block;
   width: 100%;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--border-color);
+  height: 5px;
+  border-radius: 3px;
+  background: var(--bg-inset);
+  box-shadow: var(--inset-highlight);
   overflow: hidden;
-  margin-top: 0.3rem;
+  margin-top: 0.35rem;
 }
 
 .health-bar-fill {
   display: block;
   height: 100%;
   width: 0%;
+  border-radius: inherit;
   background: var(--color-good);
   box-shadow: var(--glow-good);
   transition: width var(--transition-med), background-color var(--transition-med), box-shadow var(--transition-med);
@@ -214,14 +265,14 @@ input {
   align-items: center;
   gap: 0.6rem;
   margin: 0.75rem 1.5rem 0;
-  padding: 0.65rem 1rem;
+  padding: 0.7rem 1rem;
   background: var(--color-bad-dim);
-  border: 1px solid rgba(255, 77, 94, 0.4);
+  border: 1px solid rgba(255, 93, 112, 0.35);
   border-radius: var(--radius-sm);
   color: var(--color-bad);
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  box-shadow: var(--glow-bad);
+  box-shadow: var(--shadow-sm);
   opacity: 1;
   transition: opacity var(--transition-med);
 }
@@ -252,29 +303,30 @@ input {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.4rem;
 }
 
 .filter-search {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: var(--bg-card);
+  gap: 0.55rem;
+  background: var(--bg-inset);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 0.45rem 0.75rem;
+  padding: 0.5rem 0.8rem;
   flex: 1 1 220px;
   min-width: 0;
+  box-shadow: var(--inset-highlight);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .filter-search:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-dim);
+  box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
 .filter-search-icon {
-  opacity: 0.6;
+  opacity: 0.55;
   font-size: 0.9rem;
   flex-shrink: 0;
 }
@@ -306,7 +358,7 @@ input {
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   border-radius: 999px;
-  padding: 0.35rem 0.85rem;
+  padding: 0.4rem 0.9rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   letter-spacing: 0.03em;
@@ -323,7 +375,7 @@ input {
   color: var(--accent);
   border-color: var(--accent);
   background: var(--accent-dim);
-  box-shadow: 0 0 8px var(--accent-dim);
+  box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
 /* ---- empty state ---- */
@@ -352,14 +404,18 @@ input {
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: border-color var(--transition-med), box-shadow var(--transition-med), background-color var(--transition-med);
+  box-shadow: var(--shadow-md), var(--inset-highlight);
+  transition: border-color var(--transition-med), box-shadow var(--transition-med),
+    background-color var(--transition-med), transform var(--transition-med);
 }
 
 .card:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-color-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg), var(--inset-highlight);
 }
 
 .card[hidden] {
@@ -401,6 +457,7 @@ input {
 /* ---- status dot ---- */
 
 .status-dot {
+  position: relative;
   display: inline-block;
   width: 9px;
   height: 9px;
@@ -432,6 +489,38 @@ input {
   box-shadow: var(--glow-bad);
 }
 
+/* live "radar ping" ring — only for the healthy/active state, so it reads
+   as "currently alive" rather than decorating every card equally */
+.card[data-status='running'] .status-dot::after,
+.card[data-status='active'] .status-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--color-good);
+  opacity: 0;
+  animation: ping 2.4s ease-out infinite;
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(0.65);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-dot::after,
+  .brand-glyph::after {
+    animation: none !important;
+  }
+}
+
 /* ---- card header (checkbox-driven expand toggle) ---- */
 
 .card-expand-toggle {
@@ -445,8 +534,8 @@ input {
 .card-header {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1rem;
+  gap: 0.65rem;
+  padding: 0.9rem 1.05rem;
   cursor: pointer;
   user-select: none;
 }
@@ -457,8 +546,16 @@ input {
 }
 
 .card-type-icon {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+  border: 1px solid var(--border-color);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
   flex-shrink: 0;
 }
 
@@ -486,7 +583,7 @@ input {
   color: var(--text-muted);
   font-size: 0.8rem;
   flex-shrink: 0;
-  transition: transform var(--transition-med);
+  transition: transform var(--transition-med), color var(--transition-med);
 }
 
 .card-expand-toggle:checked ~ .card-header .chevron {
@@ -512,12 +609,13 @@ input {
 }
 
 .card-detail-content {
-  padding: 0 1rem 1rem;
+  padding: 0 1.05rem 1.05rem;
+  background: var(--bg-inset);
   border-top: 1px solid var(--border-color);
-  padding-top: 0.75rem;
+  padding-top: 0.85rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.55rem;
 }
 
 .detail-row {
@@ -542,18 +640,20 @@ input {
 .detail-gauge-row {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.3rem;
 }
 
 .detail-gauge-track {
   height: 5px;
   border-radius: 3px;
-  background: var(--border-color);
+  background: var(--bg);
+  box-shadow: var(--inset-highlight);
   overflow: hidden;
 }
 
 .detail-gauge-fill {
   height: 100%;
+  border-radius: inherit;
   background: var(--color-good);
   box-shadow: var(--glow-good);
   transition: width var(--transition-med), background-color var(--transition-med), box-shadow var(--transition-med);
@@ -578,10 +678,10 @@ input {
 .port-tag {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  background: var(--bg-elevated);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 0.15rem 0.45rem;
+  padding: 0.18rem 0.5rem;
   color: var(--text-secondary);
 }
 
@@ -589,8 +689,8 @@ input {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 0.1rem 0.5rem;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.55rem;
   border-radius: 999px;
   background: var(--color-neutral-dim);
   color: var(--color-neutral);
@@ -658,6 +758,13 @@ input {
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  /* .filter-search's "flex: 1 1 220px" sets a *width* basis for the row
+     layout above; reset it here so the column layout doesn't reinterpret
+     that 220px as a height basis and balloon the search box. */
+  .filter-search {
+    flex: 1 1 auto;
   }
 
   .health-metric {
