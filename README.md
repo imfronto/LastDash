@@ -1,5 +1,7 @@
 # Homehost Dashboard
 
+📦 **Latest release:** [v1.0.0](https://github.com/imfronto/LastDash/releases/tag/v1.0.0)
+
 A local, extensible status dashboard for a home server: Docker container health/stats, systemd
 service state, fail2ban jail activity, and host resource usage — no frameworks, no build step, no
 external dependencies beyond the Python backend.
