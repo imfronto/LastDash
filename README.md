@@ -1,8 +1,8 @@
 # Homehost Dashboard
 
 A local, extensible status dashboard for a home server: Docker container health/stats, systemd
-service state, and host resource usage — no frameworks, no build step, no external dependencies
-beyond the Python backend.
+service state, fail2ban jail activity, and host resource usage — no frameworks, no build step, no
+external dependencies beyond the Python backend.
 
 ```
 server/    FastAPI backend (Docker + systemd + host stats)
@@ -13,14 +13,33 @@ deploy/    Docker and native-systemd deployment artifacts
 ## How it works
 
 - `GET /api/v1/status` — Docker containers (status, CPU %, memory, ports) via the `docker` SDK,
-  plus systemd service states via `systemctl is-active`.
+  systemd service states via `systemctl is-active`, and fail2ban jail stats (see below).
 - `GET /api/v1/health` — host CPU/RAM/disk/uptime via `psutil`.
 - `GET /api/v1/config` — the loaded `server/config.json`, so the frontend knows the poll interval
   and which services are being watched.
 
-Both endpoints degrade gracefully: if the Docker daemon is unreachable, `containers` comes back
-empty with a `docker_error` message instead of a 500; systemd failures work the same way via
-`services_error`.
+All three data sources degrade gracefully: if the Docker daemon is unreachable, `containers` comes
+back empty with a `docker_error` message instead of a 500; systemd failures work the same way via
+`services_error`, and fail2ban via `fail2ban_error`.
+
+### Fail2ban jail stats
+
+If fail2ban is installed, the dashboard shows a panel with each *enabled* jail's currently-banned
+IPs and lifetime ban count. There's nothing to configure — it reads fail2ban's own jail configs
+(`/etc/fail2ban/jail.conf`, `jail.d/*.conf`, `jail.local`) to find enabled jails, then tails
+`/var/log/fail2ban.log` for `Ban`/`Unban` lines to compute current state. The panel simply stays
+hidden if fail2ban isn't installed or has no jails enabled.
+
+fail2ban's control socket and ban database are root-only, so `fail2ban-client status` isn't an
+option for an unprivileged service user — using it would also require `sudo`, which the native
+systemd deployment's `NoNewPrivileges=true` hardening deliberately blocks. The log file is the one
+piece of fail2ban state that's readable without elevated privileges: on Debian/Ubuntu it's owned by
+the `adm` group, which `deploy/install.sh` already adds the service user to. Deploying via Docker
+requires bind-mounting `/etc/fail2ban` and `/var/log/fail2ban.log` instead (see
+`deploy/docker-compose.yml`) — the container runs as root, so no group membership is needed there.
+
+If the log exists but isn't readable, `fail2ban_error` explains exactly what's missing (usually:
+add the service user to `adm`) instead of the panel silently failing.
 
 ### Adding services or containers to watch
 

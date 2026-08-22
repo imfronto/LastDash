@@ -17,6 +17,7 @@ if ! id "$SERVICE_USER" &>/dev/null; then
   useradd --system --no-create-home --shell /usr/sbin/nologin "$SERVICE_USER"
 fi
 usermod -aG docker "$SERVICE_USER" 2>/dev/null || echo "Warning: 'docker' group not found; skipping (container stats will be unavailable)."
+usermod -aG adm "$SERVICE_USER" 2>/dev/null || echo "Warning: 'adm' group not found; skipping (fail2ban jail stats will be unavailable)."
 
 echo "Syncing application files to $INSTALL_DIR..."
 mkdir -p "$INSTALL_DIR"

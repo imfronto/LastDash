@@ -43,6 +43,8 @@ const dom = {
   healthDiskBar: document.getElementById('health-disk-bar'),
   healthUptime: document.getElementById('health-uptime'),
   themeToggle: document.getElementById('theme-toggle'),
+  fail2banPanel: document.getElementById('fail2ban-panel'),
+  fail2banJails: document.getElementById('fail2ban-jails'),
 };
 
 // =============================================================================
@@ -234,6 +236,69 @@ function renderHealth(health) {
   setBar(dom.healthDiskBar, disk.percent);
 
   dom.healthUptime.textContent = formatUptime(health.uptime_seconds);
+}
+
+// =============================================================================
+// Fail2ban panel rendering
+// =============================================================================
+
+/**
+ * Renders the fail2ban jail-status panel. Hidden entirely when fail2ban
+ * has no enabled jails and nothing went wrong (the common case for anyone
+ * who hasn't set it up) — only appears once there's real data or an
+ * actual error to report.
+ */
+function renderFail2ban(fail2ban, error) {
+  const jails = fail2ban && Array.isArray(fail2ban.jails) ? fail2ban.jails : [];
+
+  if (jails.length === 0 && !error) {
+    dom.fail2banPanel.hidden = true;
+    return;
+  }
+  dom.fail2banPanel.hidden = false;
+  dom.fail2banJails.replaceChildren();
+
+  if (error) {
+    const errEl = document.createElement('p');
+    errEl.className = 'fail2ban-error';
+    errEl.textContent = error;
+    dom.fail2banJails.appendChild(errEl);
+    return;
+  }
+
+  jails.forEach((jail) => {
+    const jailEl = document.createElement('div');
+    jailEl.className = 'fail2ban-jail';
+
+    const head = document.createElement('div');
+    head.className = 'fail2ban-jail-head';
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'fail2ban-jail-name';
+    nameEl.textContent = jail.name;
+
+    const countEl = document.createElement('span');
+    countEl.className = 'fail2ban-jail-count';
+    countEl.dataset.active = String((jail.currently_banned || 0) > 0);
+    countEl.textContent = `${jail.currently_banned || 0} banned`;
+
+    head.append(nameEl, countEl);
+    jailEl.appendChild(head);
+
+    if (Array.isArray(jail.banned_ips) && jail.banned_ips.length > 0) {
+      const ipsEl = document.createElement('div');
+      ipsEl.className = 'fail2ban-jail-ips';
+      jail.banned_ips.forEach((ip) => {
+        const tag = document.createElement('span');
+        tag.className = 'fail2ban-ip-tag';
+        tag.textContent = ip;
+        ipsEl.appendChild(tag);
+      });
+      jailEl.appendChild(ipsEl);
+    }
+
+    dom.fail2banJails.appendChild(jailEl);
+  });
 }
 
 // =============================================================================
@@ -560,6 +625,7 @@ async function pollTick() {
 
     renderCards(statusData);
     renderHealth(healthData);
+    renderFail2ban(statusData.fail2ban, statusData.fail2ban_error);
     applyFilters();
 
     if (statusData.docker_error) {

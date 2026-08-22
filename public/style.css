@@ -360,6 +360,104 @@ input {
   margin: 0 auto;
 }
 
+/* ---- fail2ban panel ---- */
+
+.fail2ban-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--color-warn);
+  margin-bottom: 1.25rem;
+}
+
+.fail2ban-panel[hidden] {
+  display: none;
+}
+
+.fail2ban-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  background: var(--bg-strip);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.fail2ban-icon {
+  font-size: 0.85rem;
+}
+
+.fail2ban-title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+}
+
+.fail2ban-jails {
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.fail2ban-jail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.fail2ban-jail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.fail2ban-jail-name {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.fail2ban-jail-count {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid var(--color-neutral);
+  color: var(--color-neutral);
+}
+
+.fail2ban-jail-count[data-active='true'] {
+  border-color: var(--color-warn);
+  color: var(--color-warn);
+}
+
+.fail2ban-jail-ips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.fail2ban-ip-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  background: var(--bg-strip);
+  border: 1px solid var(--border-color-strong);
+  padding: 0.15rem 0.45rem;
+  color: var(--color-bad);
+}
+
+.fail2ban-error {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-bad);
+}
+
 /* ---- filter bar ---- */
 
 .filter-bar {

@@ -67,6 +67,14 @@
   </div>
 
   <main class="dashboard">
+    <section id="fail2ban-panel" class="fail2ban-panel" aria-label="Fail2ban jail status" hidden>
+      <div class="fail2ban-head">
+        <span class="fail2ban-icon" aria-hidden="true">&#128737;</span>
+        <span class="fail2ban-title">Fail2ban</span>
+      </div>
+      <div class="fail2ban-jails" id="fail2ban-jails"></div>
+    </section>
+
     <section class="filter-bar" aria-label="Filter services and containers">
       <label class="filter-search" for="filter-text">
         <span class="filter-search-icon" aria-hidden="true">&#128269;</span>

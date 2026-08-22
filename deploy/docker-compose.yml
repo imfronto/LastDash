@@ -23,3 +23,12 @@ services:
       - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket
       # Hand-editable without rebuilding the image.
       - ../server/config.json:/app/server/config.json:ro
+      # Optional: only needed for the fail2ban jail-stats panel. fail2ban
+      # runs on the host, not in this container, so both its jail configs
+      # (to know which jails are enabled) and its log (to count bans) have
+      # to be bind-mounted in read-only. Safe to omit if fail2ban isn't in
+      # use — the panel just stays hidden. The container runs as root (see
+      # Dockerfile), so unlike the native systemd daemon mode, no group
+      # membership is needed to read them.
+      - /etc/fail2ban:/etc/fail2ban:ro
+      - /var/log/fail2ban.log:/var/log/fail2ban.log:ro
