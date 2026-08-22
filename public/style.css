@@ -1,68 +1,57 @@
 /* ==========================================================================
    Homehost Dashboard — theme tokens
-   Swap the values in :root to re-skin (Retro CRT / Sleek Minimal Dark /
-   Cyberpunk) without touching any rule below.
+   Matches the "Neo-Brutalist / Boxy Minimal" design language of the
+   webgui (hub-dashboard) project: flat surfaces, sharp corners, thin
+   borders instead of shadows/blur, uppercase monospace labels, small
+   glowing status LEDs, and outlined (not filled) badges.
    ========================================================================== */
 
 :root {
   /* -- surfaces -- */
-  --bg: #090b12;
-  --bg-elevated: #0e1220;
-  --bg-card: #121727;
-  --bg-card-hover: #182036;
-  --bg-inset: #0b0e18;
-  --bg-glass: rgba(14, 18, 32, 0.72);
-  --border-color: #212a42;
-  --border-color-strong: #34406866;
-  --border-hairline: rgba(255, 255, 255, 0.05);
+  --bg: #0f0f11;
+  --bg-elevated: #18181c;
+  --bg-card: #18181c;
+  --bg-card-hover: #1e1e23;
+  --bg-strip: #141417;
+  --bg-glass: #18181c;
+  --well-bg: #26262e;
+  --border-color: #2e2e38;
+  --border-color-strong: #3f3f4c;
 
   /* -- text -- */
-  --text-primary: #edf1f9;
-  --text-secondary: #8e9ab8;
-  --text-muted: #566082;
+  --text-primary: #f0f0f4;
+  --text-secondary: #c4c4cc;
+  --text-muted: #a1a1aa;
 
   /* -- state colors -- */
-  --color-good: #34e0a1;
-  --color-good-dim: rgba(52, 224, 161, 0.14);
-  --color-warn: #f5b942;
-  --color-warn-dim: rgba(245, 185, 66, 0.14);
-  --color-bad: #ff5d70;
-  --color-bad-dim: rgba(255, 93, 112, 0.14);
-  --color-bad-border: rgba(255, 93, 112, 0.35);
-  --color-neutral: #6b76a0;
-  --color-neutral-dim: rgba(107, 118, 160, 0.14);
+  --color-good: #22c55e;
+  --color-warn: #eab308;
+  --color-bad: #ef4444;
+  --color-neutral: #a1a1aa;
 
-  /* -- glow (used sparingly, on state indicators only) -- */
-  --glow-good: 0 0 10px rgba(52, 224, 161, 0.4);
-  --glow-warn: 0 0 10px rgba(245, 185, 66, 0.4);
-  --glow-bad: 0 0 10px rgba(255, 93, 112, 0.4);
-  --glow-neutral: 0 0 6px rgba(107, 118, 160, 0.2);
+  /* -- glow — used only on the small status LEDs, matching webgui's
+     `.status-led` treatment; nothing else in this theme glows -- */
+  --glow-good: 0 0 6px rgba(34, 197, 94, 0.6);
+  --glow-warn: 0 0 6px rgba(234, 179, 8, 0.6);
+  --glow-bad: 0 0 6px rgba(239, 68, 68, 0.6);
+  --glow-neutral: none;
 
   /* -- accent (brand) -- */
-  --accent: #35d7e6;
-  --accent-soft: #8ceaf0;
-  --accent-dim: rgba(53, 215, 230, 0.14);
-  --glow-accent: 0 0 12px rgba(53, 215, 230, 0.4);
-
-  /* -- elevation -- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.38);
-  --shadow-lg: 0 14px 40px rgba(0, 0, 0, 0.5);
-  --inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --accent: #3b82f6;
 
   /* -- typography -- */
-  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Consolas, monospace;
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-  /* -- layout -- */
-  --radius-sm: 7px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --gap: 1rem;
+  /* -- layout — sharp corners everywhere -- */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --gap: 0.5rem;
 
   /* -- motion -- */
-  --transition-fast: 150ms ease;
-  --transition-med: 260ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 100ms ease;
+  --transition-med: 180ms ease;
 
   color-scheme: dark;
 }
@@ -74,51 +63,31 @@
    ========================================================================== */
 
 :root[data-theme='light'] {
-  /* -- surfaces -- */
-  --bg: #f2f4f9;
+  --bg: #f4f4f6;
   --bg-elevated: #ffffff;
   --bg-card: #ffffff;
-  --bg-card-hover: #eef1f8;
-  --bg-inset: #eaeef6;
-  --bg-glass: rgba(255, 255, 255, 0.78);
-  --border-color: #dbe1ee;
-  --border-color-strong: #b9c3da;
-  --border-hairline: rgba(15, 23, 42, 0.06);
+  --bg-card-hover: #eef0f3;
+  --bg-strip: #eceef2;
+  --bg-glass: #ffffff;
+  --well-bg: #e5e7eb;
+  --border-color: #dcdee3;
+  --border-color-strong: #b9bcc4;
 
-  /* -- text -- */
-  --text-primary: #10192e;
-  --text-secondary: #4c5872;
-  --text-muted: #7c879e;
+  --text-primary: #101216;
+  --text-secondary: #4b5262;
+  --text-muted: #6b7280;
 
-  /* -- state colors (deepened for contrast on a light surface) -- */
-  --color-good: #128a5c;
-  --color-good-dim: rgba(18, 138, 92, 0.12);
-  --color-warn: #a8690a;
-  --color-warn-dim: rgba(168, 105, 10, 0.12);
-  --color-bad: #d3283f;
-  --color-bad-dim: rgba(211, 40, 63, 0.12);
-  --color-bad-border: rgba(211, 40, 63, 0.3);
-  --color-neutral: #5b6684;
-  --color-neutral-dim: rgba(91, 102, 132, 0.12);
+  --color-good: #16a34a;
+  --color-warn: #b45309;
+  --color-bad: #dc2626;
+  --color-neutral: #6b7280;
 
-  /* -- glow — neon glows read as muddy smudges on a light surface, so the
-     "glow" here is just a plain shadow-less state color -- */
-  --glow-good: none;
-  --glow-warn: none;
-  --glow-bad: none;
+  --glow-good: 0 0 6px rgba(22, 163, 74, 0.35);
+  --glow-warn: 0 0 6px rgba(180, 83, 9, 0.35);
+  --glow-bad: 0 0 6px rgba(220, 38, 38, 0.35);
   --glow-neutral: none;
 
-  /* -- accent (brand) -- */
-  --accent: #0a7f91;
-  --accent-soft: #0891a8;
-  --accent-dim: rgba(10, 127, 145, 0.12);
-  --glow-accent: none;
-
-  /* -- elevation -- */
-  --shadow-sm: 0 1px 2px rgba(16, 25, 46, 0.06);
-  --shadow-md: 0 4px 16px rgba(16, 25, 46, 0.08);
-  --shadow-lg: 0 12px 32px rgba(16, 25, 46, 0.12);
-  --inset-highlight: inset 0 1px 0 rgba(16, 25, 46, 0.03);
+  --accent: #2563eb;
 
   color-scheme: light;
 }
@@ -140,8 +109,6 @@ body {
 
 body {
   margin: 0;
-  position: relative;
-  isolation: isolate;
   background: var(--bg);
   color: var(--text-primary);
   font-family: var(--font-sans);
@@ -150,28 +117,22 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* soft brand-colored glow washes, plus a faint schematic grid — pure CSS,
-   no assets — for a "control room" feel without fighting legibility */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background: radial-gradient(ellipse 1100px 620px at 12% -12%, rgba(53, 215, 230, 0.09), transparent 60%),
-    radial-gradient(ellipse 900px 520px at 88% -6%, rgba(52, 224, 161, 0.06), transparent 55%),
-    var(--bg);
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
 
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  opacity: 0.5;
-  background-image: linear-gradient(var(--border-hairline) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border-hairline) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color-strong);
+  border: 1px solid var(--bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 h1,
@@ -197,12 +158,9 @@ input {
   align-items: center;
   justify-content: space-between;
   gap: var(--gap);
-  padding: 1.25rem 1.5rem;
+  padding: 1.1rem 1.5rem;
   background: var(--bg-glass);
-  backdrop-filter: blur(10px) saturate(1.2);
-  -webkit-backdrop-filter: blur(10px) saturate(1.2);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
+  border-bottom: 2px solid var(--border-color);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -211,41 +169,38 @@ input {
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
 }
 
+/* a real dot (not a glyph glow) — matches webgui's `.brand .dot`: solid
+   circle with a soft static ring, no animation */
 .brand-glyph {
-  position: relative;
-  display: inline-flex;
-  color: var(--color-good);
-  font-size: 1.15rem;
-  text-shadow: var(--glow-good);
-  line-height: 1;
-}
-
-.brand-glyph::after {
-  content: '';
-  position: absolute;
-  inset: -6px;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  border: 1px solid var(--color-good);
-  opacity: 0;
-  animation: ping 2.6s ease-out infinite;
+  background: var(--color-good);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+  color: transparent;
+  font-size: 0;
+  flex-shrink: 0;
 }
 
 .brand-title {
-  font-size: 1.35rem;
-  letter-spacing: 0.14em;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
   font-weight: 700;
+  text-transform: uppercase;
   color: var(--text-primary);
 }
 
 .brand-subtitle {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   letter-spacing: 0.05em;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   text-transform: lowercase;
 }
 
@@ -265,20 +220,20 @@ input {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.15rem;
-  height: 2.15rem;
+  width: 2rem;
+  height: 2rem;
   flex-shrink: 0;
-  border-radius: 50%;
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color-strong);
   color: var(--text-secondary);
   transition: color var(--transition-fast), border-color var(--transition-fast),
-    background-color var(--transition-fast), box-shadow var(--transition-fast);
+    background-color var(--transition-fast);
 }
 
 .theme-toggle:hover {
-  color: var(--accent);
-  border-color: var(--border-color-strong);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
 
 .theme-toggle:focus-visible {
@@ -287,7 +242,7 @@ input {
 }
 
 .theme-icon {
-  font-size: 1.05rem;
+  font-size: 1rem;
   line-height: 1;
 }
 
@@ -324,7 +279,7 @@ input {
   grid-row: 1;
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
   text-transform: uppercase;
 }
@@ -332,7 +287,7 @@ input {
 .health-value {
   grid-row: 1;
   font-family: var(--font-mono);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
   transition: color var(--transition-med);
@@ -343,10 +298,9 @@ input {
   grid-row: 2;
   display: block;
   width: 100%;
-  height: 5px;
-  border-radius: 3px;
-  background: var(--bg-inset);
-  box-shadow: var(--inset-highlight);
+  height: 6px;
+  background: var(--well-bg);
+  border: 1px solid var(--border-color);
   overflow: hidden;
   margin-top: 0.35rem;
 }
@@ -355,20 +309,16 @@ input {
   display: block;
   height: 100%;
   width: 0%;
-  border-radius: inherit;
-  background: var(--color-good);
-  box-shadow: var(--glow-good);
-  transition: width var(--transition-med), background-color var(--transition-med), box-shadow var(--transition-med);
+  background: var(--accent);
+  transition: width var(--transition-med), background-color var(--transition-med);
 }
 
 .health-bar-fill[data-level='warn'] {
   background: var(--color-warn);
-  box-shadow: var(--glow-warn);
 }
 
 .health-bar-fill[data-level='bad'] {
   background: var(--color-bad);
-  box-shadow: var(--glow-bad);
 }
 
 /* ==========================================================================
@@ -381,13 +331,12 @@ input {
   gap: 0.6rem;
   margin: 0.75rem 1.5rem 0;
   padding: 0.7rem 1rem;
-  background: var(--color-bad-dim);
-  border: 1px solid var(--color-bad-border);
-  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color-strong);
+  border-left: 3px solid var(--color-bad);
   color: var(--color-bad);
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  box-shadow: var(--shadow-sm);
   opacity: 1;
   transition: opacity var(--transition-med);
 }
@@ -418,26 +367,23 @@ input {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1.4rem;
+  margin-bottom: 1.25rem;
 }
 
 .filter-search {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  background: var(--bg-inset);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  background: var(--bg);
+  border: 1px solid var(--border-color-strong);
   padding: 0.5rem 0.8rem;
   flex: 1 1 220px;
   min-width: 0;
-  box-shadow: var(--inset-highlight);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: border-color var(--transition-fast);
 }
 
 .filter-search:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
 .filter-search-icon {
@@ -470,27 +416,27 @@ input {
   appearance: none;
   cursor: pointer;
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color-strong);
+  border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  border-radius: 999px;
-  padding: 0.4rem 0.9rem;
+  padding: 0.4rem 0.85rem;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.03em;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   transition: color var(--transition-fast), border-color var(--transition-fast),
-    background-color var(--transition-fast), box-shadow var(--transition-fast);
+    background-color var(--transition-fast);
 }
 
 .chip:hover {
   color: var(--text-primary);
-  border-color: var(--border-color-strong);
+  border-color: var(--text-muted);
 }
 
 .chip[aria-pressed='true'] {
-  color: var(--accent);
+  color: #fff;
   border-color: var(--accent);
-  background: var(--accent-dim);
-  box-shadow: 0 0 0 3px var(--accent-dim);
+  background: var(--accent);
 }
 
 /* ---- empty state ---- */
@@ -519,66 +465,48 @@ input {
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border-left: 3px solid var(--color-neutral);
   overflow: hidden;
-  box-shadow: var(--shadow-md), var(--inset-highlight);
-  transition: border-color var(--transition-med), box-shadow var(--transition-med),
-    background-color var(--transition-med), transform var(--transition-med);
+  transition: border-color var(--transition-med), background-color var(--transition-med);
 }
 
 .card:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-color-strong);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-lg), var(--inset-highlight);
 }
 
 .card[hidden] {
   display: none;
 }
 
-/* state accent stripe, driven purely by data-status */
-.card::before {
-  content: '';
-  display: block;
-  height: 3px;
-  width: 100%;
-  background: var(--color-neutral);
-  box-shadow: var(--glow-neutral);
-  transition: background-color var(--transition-med), box-shadow var(--transition-med);
+/* left-edge accent, driven purely by data-status — same idiom webgui
+   uses for its toast notifications */
+.card[data-status='running'],
+.card[data-status='active'] {
+  border-left-color: var(--color-good);
 }
 
-.card[data-status='running']::before,
-.card[data-status='active']::before {
-  background: var(--color-good);
-  box-shadow: var(--glow-good);
+.card[data-status='paused'],
+.card[data-status='inactive'],
+.card[data-status='restarting'] {
+  border-left-color: var(--color-warn);
 }
 
-.card[data-status='paused']::before,
-.card[data-status='inactive']::before,
-.card[data-status='restarting']::before {
-  background: var(--color-warn);
-  box-shadow: var(--glow-warn);
+.card[data-status='exited'],
+.card[data-status='failed'],
+.card[data-status='dead'],
+.card[data-status='error'] {
+  border-left-color: var(--color-bad);
 }
 
-.card[data-status='exited']::before,
-.card[data-status='failed']::before,
-.card[data-status='dead']::before,
-.card[data-status='error']::before {
-  background: var(--color-bad);
-  box-shadow: var(--glow-bad);
-}
-
-/* ---- status dot ---- */
+/* ---- status dot (LED) ---- */
 
 .status-dot {
-  position: relative;
   display: inline-block;
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--color-neutral);
-  box-shadow: var(--glow-neutral);
   flex-shrink: 0;
   transition: background-color var(--transition-med), box-shadow var(--transition-med);
 }
@@ -604,35 +532,9 @@ input {
   box-shadow: var(--glow-bad);
 }
 
-/* live "radar ping" ring — only for the healthy/active state, so it reads
-   as "currently alive" rather than decorating every card equally */
-.card[data-status='running'] .status-dot::after,
-.card[data-status='active'] .status-dot::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 1px solid var(--color-good);
-  opacity: 0;
-  animation: ping 2.4s ease-out infinite;
-}
-
-@keyframes ping {
-  0% {
-    transform: scale(0.65);
-    opacity: 0.55;
-  }
-  70%,
-  100% {
-    transform: scale(1.9);
-    opacity: 0;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .status-dot::after,
-  .brand-glyph::after {
-    animation: none !important;
+  * {
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -650,7 +552,9 @@ input {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.9rem 1.05rem;
+  padding: 0.8rem 1rem;
+  background: var(--bg-strip);
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   user-select: none;
 }
@@ -664,19 +568,18 @@ input {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.4rem;
-  height: 1.4rem;
-  border-radius: var(--radius-sm);
-  background: var(--bg-inset);
+  width: 1.3rem;
+  height: 1.3rem;
+  background: var(--bg);
   border: 1px solid var(--border-color);
-  font-size: 0.78rem;
-  color: var(--text-secondary);
+  font-size: 0.75rem;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
 .card-name {
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
@@ -688,8 +591,10 @@ input {
 
 .card-oneline {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -724,13 +629,10 @@ input {
 }
 
 .card-detail-content {
-  padding: 0 1.05rem 1.05rem;
-  background: var(--bg-inset);
-  border-top: 1px solid var(--border-color);
-  padding-top: 0.85rem;
+  padding: 0.85rem 1rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.5rem;
 }
 
 .detail-row {
@@ -738,11 +640,14 @@ input {
   justify-content: space-between;
   gap: 0.75rem;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
 }
 
 .detail-row .detail-key {
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.68rem;
   flex-shrink: 0;
 }
 
@@ -759,29 +664,24 @@ input {
 }
 
 .detail-gauge-track {
-  height: 5px;
-  border-radius: 3px;
-  background: var(--bg);
-  box-shadow: var(--inset-highlight);
+  height: 6px;
+  background: var(--well-bg);
+  border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
 .detail-gauge-fill {
   height: 100%;
-  border-radius: inherit;
-  background: var(--color-good);
-  box-shadow: var(--glow-good);
-  transition: width var(--transition-med), background-color var(--transition-med), box-shadow var(--transition-med);
+  background: var(--accent);
+  transition: width var(--transition-med), background-color var(--transition-med);
 }
 
 .detail-gauge-fill[data-level='warn'] {
   background: var(--color-warn);
-  box-shadow: var(--glow-warn);
 }
 
 .detail-gauge-fill[data-level='bad'] {
   background: var(--color-bad);
-  box-shadow: var(--glow-bad);
 }
 
 .detail-ports-list {
@@ -792,35 +692,36 @@ input {
 
 .port-tag {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  padding: 0.18rem 0.5rem;
+  font-size: 0.68rem;
+  background: var(--bg-strip);
+  border: 1px solid var(--border-color-strong);
+  padding: 0.15rem 0.45rem;
   color: var(--text-secondary);
 }
 
+/* outlined badge — border + text color by state, no filled background,
+   matching webgui's `.badge` variants exactly */
 .status-badge {
+  display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  background: var(--color-neutral-dim);
+  padding: 0.12rem 0.5rem;
+  border: 1px solid var(--color-neutral);
   color: var(--color-neutral);
 }
 
 .card[data-status='running'] .status-badge,
 .card[data-status='active'] .status-badge {
-  background: var(--color-good-dim);
+  border-color: var(--color-good);
   color: var(--color-good);
 }
 
 .card[data-status='paused'] .status-badge,
 .card[data-status='inactive'] .status-badge,
 .card[data-status='restarting'] .status-badge {
-  background: var(--color-warn-dim);
+  border-color: var(--color-warn);
   color: var(--color-warn);
 }
 
@@ -828,7 +729,7 @@ input {
 .card[data-status='failed'] .status-badge,
 .card[data-status='dead'] .status-badge,
 .card[data-status='error'] .status-badge {
-  background: var(--color-bad-dim);
+  border-color: var(--color-bad);
   color: var(--color-bad);
 }
 
@@ -838,10 +739,11 @@ input {
 
 .site-footer {
   text-align: center;
-  padding: 1.5rem;
+  padding: 1.25rem;
+  border-top: 1px solid var(--border-color);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
 }
 
 /* ==========================================================================
@@ -893,7 +795,7 @@ input {
 
 @media (max-width: 360px) {
   .brand-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .health-strip {
