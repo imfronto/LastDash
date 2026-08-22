@@ -39,7 +39,7 @@ FAIL2BAN_MAX_BANNED_IPS = 50
 
 # Local-dev defaults. For a real deployment, set ALLOWED_ORIGINS to the exact
 # scheme+host+port the dashboard is served from on the LAN, e.g.
-# "http://homeserver.lan:8000,http://192.168.1.10:8000" — do not use "*"
+# "http://main.lan:8000,http://192.168.1.10:8000" — do not use "*"
 # once this leaves localhost, since credentials/cookies are not involved here
 # but tightening origins still prevents other LAN devices/browsers from
 # scripting against this API.

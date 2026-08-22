@@ -9,9 +9,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # Tighten this to your LAN hostname/IP once this leaves localhost, e.g.
-      # ALLOWED_ORIGINS=http://homeserver.lan:8000
-      - ALLOWED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+      # main.lan resolves to this host via the /etc/hosts entry that
+      # deploy/install.sh adds (or add it yourself for the Docker path).
+      # Tighten this list further to just your actual LAN hostname/IP if
+      # you don't need the localhost fallbacks.
+      - ALLOWED_ORIGINS=http://main.lan:8000,http://localhost:8000,http://127.0.0.1:8000
     volumes:
       # Read-only: the dashboard only lists/inspects containers, never
       # starts/stops/creates them.

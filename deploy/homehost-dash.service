@@ -8,7 +8,7 @@ Type=simple
 User=homehost
 Group=docker
 WorkingDirectory=/opt/homehost-dash
-Environment=ALLOWED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+Environment=ALLOWED_ORIGINS=http://main.lan:8000,http://localhost:8000,http://127.0.0.1:8000
 ExecStart=/opt/homehost-dash/venv/bin/uvicorn server.app:app --host 0.0.0.0 --port 8000 --workers 2
 Restart=on-failure
 RestartSec=5

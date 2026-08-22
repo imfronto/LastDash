@@ -94,9 +94,13 @@ The backend mounts `public/` as static files, so one process serves everything:
 ```bash
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-ALLOWED_ORIGINS=http://homeserver.lan:8000 \
+ALLOWED_ORIGINS=http://main.lan:8000 \
   uvicorn server.app:app --host 0.0.0.0 --port 8000 --workers 2
 ```
+
+`main.lan` is this project's convention for the dashboard's LAN name (matching `hub.lan` in the
+companion `webgui` project) — add `127.0.0.1 main.lan` to `/etc/hosts` yourself here, or use
+`deploy/install.sh` below, which does it for you.
 
 ## Production: native systemd daemon (recommended)
 
@@ -107,9 +111,11 @@ both `/var/run/docker.sock` and `systemctl`, with no D-Bus socket plumbing requi
 sudo deploy/install.sh
 ```
 
-This creates a `homehost` system user (added to the `docker` group), syncs the app to
-`/opt/homehost-dash`, creates a venv, and installs+enables `deploy/homehost-dash.service`. Re-run
-it any time to pick up code or config changes.
+This adds `127.0.0.1 main.lan` to `/etc/hosts` (skipped if already present; override the domain
+with `DASHBOARD_DOMAIN=other.lan sudo -E deploy/install.sh`), creates a `homehost` system user
+(added to the `docker` and `adm` groups), syncs the app to `/opt/homehost-dash`, creates a venv,
+and installs+enables `deploy/homehost-dash.service`. Re-run it any time to pick up code or config
+changes. Once it's done, the dashboard is at `http://main.lan:8000`.
 
 ```bash
 systemctl status homehost-dash.service
@@ -136,6 +142,10 @@ This is a reasonable default on most systemd-based Linux hosts, but it is inhere
 than the native daemon mode above (socket path can differ across distros, and it only works when
 the host actually runs systemd) — if systemd checks stop working in Docker mode, prefer switching
 to the native systemd daemon instead of debugging D-Bus mounts.
+
+Docker doesn't touch `/etc/hosts` for you — add `127.0.0.1 main.lan` yourself if you want the
+`http://main.lan:8000` URL to work on this machine (`docker-compose.yml`'s `ALLOWED_ORIGINS`
+already allows that origin).
 
 ## Frontend
 

@@ -5,11 +5,19 @@ set -euo pipefail
 
 INSTALL_DIR="/opt/homehost-dash"
 SERVICE_USER="homehost"
+DASHBOARD_DOMAIN="${DASHBOARD_DOMAIN:-main.lan}"
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ $EUID -ne 0 ]]; then
   echo "Please run as root (sudo $0)" >&2
   exit 1
+fi
+
+if ! grep -qE "\b${DASHBOARD_DOMAIN}\b" /etc/hosts; then
+  echo "Adding '127.0.0.1 ${DASHBOARD_DOMAIN}' to /etc/hosts..."
+  echo "127.0.0.1 ${DASHBOARD_DOMAIN}" >> /etc/hosts
+else
+  echo "'${DASHBOARD_DOMAIN}' already present in /etc/hosts, skipping."
 fi
 
 if ! id "$SERVICE_USER" &>/dev/null; then
@@ -41,4 +49,4 @@ systemctl daemon-reload
 systemctl enable homehost-dash.service
 systemctl restart homehost-dash.service
 
-echo "Done. Check status with: systemctl status homehost-dash.service"
+echo "Done. Visit http://${DASHBOARD_DOMAIN}:8000 or check status with: systemctl status homehost-dash.service"
