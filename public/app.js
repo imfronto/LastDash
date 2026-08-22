@@ -45,6 +45,19 @@ const dom = {
   themeToggle: document.getElementById('theme-toggle'),
   fail2banPanel: document.getElementById('fail2ban-panel'),
   fail2banJails: document.getElementById('fail2ban-jails'),
+  settingsToggle: document.getElementById('settings-toggle'),
+  settingsOverlay: document.getElementById('settings-overlay'),
+  settingsClose: document.getElementById('settings-close'),
+  settingsCancel: document.getElementById('settings-cancel'),
+  settingsSave: document.getElementById('settings-save'),
+  settingsServicesList: document.getElementById('settings-services-list'),
+  settingsFiltersList: document.getElementById('settings-filters-list'),
+  settingsServiceInput: document.getElementById('settings-service-input'),
+  settingsServiceAdd: document.getElementById('settings-service-add'),
+  settingsFilterInput: document.getElementById('settings-filter-input'),
+  settingsFilterAdd: document.getElementById('settings-filter-add'),
+  settingsPollInterval: document.getElementById('settings-poll-interval'),
+  settingsError: document.getElementById('settings-error'),
 };
 
 // =============================================================================
@@ -58,6 +71,11 @@ let activePollController = null;
 
 let filterText = '';
 let filterStatus = 'all';
+
+// working copy of the config while the settings modal is open — only
+// written back to the server if the user hits Save
+let editingServices = [];
+let editingFilters = [];
 
 // key -> { root, refs, cache } for diff-rendering. Keys are namespaced,
 // e.g. "container:<id>" or "service:<name>", so containers and services
@@ -650,6 +668,149 @@ function startPolling() {
 }
 
 // =============================================================================
+// Settings modal — add/remove watched systemd services & container
+// filters, and the poll interval, without hand-editing config.json.
+// Edits are local to `editingServices`/`editingFilters` until Save PUTs
+// the whole config back; Cancel/close just discards them.
+// =============================================================================
+
+function renderSettingsList(container, items, onRemove) {
+  container.replaceChildren();
+
+  if (items.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'settings-empty';
+    empty.textContent = 'None configured.';
+    container.appendChild(empty);
+    return;
+  }
+
+  items.forEach((item) => {
+    const row = document.createElement('div');
+    row.className = 'settings-list-item';
+
+    const nameEl = document.createElement('span');
+    nameEl.textContent = item;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'icon-btn settings-list-item-remove';
+    removeBtn.setAttribute('aria-label', `Remove ${item}`);
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', () => onRemove(item));
+
+    row.append(nameEl, removeBtn);
+    container.appendChild(row);
+  });
+}
+
+function renderSettingsServices() {
+  renderSettingsList(dom.settingsServicesList, editingServices, (name) => {
+    editingServices = editingServices.filter((existing) => existing !== name);
+    renderSettingsServices();
+  });
+}
+
+function renderSettingsFilters() {
+  renderSettingsList(dom.settingsFiltersList, editingFilters, (filterValue) => {
+    editingFilters = editingFilters.filter((existing) => existing !== filterValue);
+    renderSettingsFilters();
+  });
+}
+
+function addSettingsService() {
+  const value = dom.settingsServiceInput.value.trim();
+  if (value && !editingServices.includes(value)) {
+    editingServices.push(value);
+    renderSettingsServices();
+  }
+  dom.settingsServiceInput.value = '';
+  dom.settingsServiceInput.focus();
+}
+
+function addSettingsFilter() {
+  const value = dom.settingsFilterInput.value.trim();
+  if (value && !editingFilters.includes(value)) {
+    editingFilters.push(value);
+    renderSettingsFilters();
+  }
+  dom.settingsFilterInput.value = '';
+  dom.settingsFilterInput.focus();
+}
+
+function showSettingsError(message) {
+  dom.settingsError.textContent = message;
+  dom.settingsError.hidden = false;
+}
+
+function hideSettingsError() {
+  dom.settingsError.hidden = true;
+}
+
+async function openSettings() {
+  hideSettingsError();
+  try {
+    const controller = new AbortController();
+    const config = await fetchJSON(ENDPOINTS.config, controller.signal);
+    editingServices = Array.isArray(config.systemd_services) ? [...config.systemd_services] : [];
+    editingFilters = Array.isArray(config.container_filters) ? [...config.container_filters] : [];
+    dom.settingsPollInterval.value = Number.isFinite(config.poll_interval_seconds)
+      ? config.poll_interval_seconds
+      : 3;
+  } catch (err) {
+    editingServices = [];
+    editingFilters = [];
+    dom.settingsPollInterval.value = 3;
+    showSettingsError('Could not load the current config — starting from empty.');
+  }
+  renderSettingsServices();
+  renderSettingsFilters();
+  dom.settingsOverlay.hidden = false;
+  dom.settingsServiceInput.focus();
+}
+
+function closeSettings() {
+  dom.settingsOverlay.hidden = true;
+}
+
+async function saveSettings() {
+  hideSettingsError();
+
+  const pollIntervalSeconds = Number(dom.settingsPollInterval.value);
+  if (!Number.isFinite(pollIntervalSeconds) || pollIntervalSeconds < 0.5 || pollIntervalSeconds > 300) {
+    showSettingsError('Poll interval must be a number between 0.5 and 300 seconds.');
+    return;
+  }
+
+  dom.settingsSave.disabled = true;
+  try {
+    const response = await fetch(ENDPOINTS.config, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemd_services: editingServices,
+        container_filters: editingFilters,
+        poll_interval_seconds: pollIntervalSeconds,
+      }),
+    });
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      throw new Error(body.detail || `Save failed with HTTP ${response.status}`);
+    }
+
+    const saved = await response.json();
+    pollIntervalMs = saved.poll_interval_seconds * 1000;
+    closeSettings();
+    startPolling();
+  } catch (err) {
+    showSettingsError(err.message || 'Failed to save settings.');
+  } finally {
+    dom.settingsSave.disabled = false;
+  }
+}
+
+// =============================================================================
 // Bootstrap
 // =============================================================================
 
@@ -691,6 +852,35 @@ function bindEvents() {
     } catch (err) {
       // localStorage unavailable (private mode, disabled storage) — theme
       // choice just won't persist across reloads.
+    }
+  });
+
+  dom.settingsToggle.addEventListener('click', openSettings);
+  dom.settingsClose.addEventListener('click', closeSettings);
+  dom.settingsCancel.addEventListener('click', closeSettings);
+  dom.settingsSave.addEventListener('click', saveSettings);
+
+  dom.settingsOverlay.addEventListener('click', (event) => {
+    if (event.target === dom.settingsOverlay) closeSettings();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !dom.settingsOverlay.hidden) closeSettings();
+  });
+
+  dom.settingsServiceAdd.addEventListener('click', addSettingsService);
+  dom.settingsServiceInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      addSettingsService();
+    }
+  });
+
+  dom.settingsFilterAdd.addEventListener('click', addSettingsFilter);
+  dom.settingsFilterInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      addSettingsFilter();
     }
   });
 }

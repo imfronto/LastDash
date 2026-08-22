@@ -214,7 +214,7 @@ input {
   min-width: 0;
 }
 
-.theme-toggle {
+.icon-btn {
   appearance: none;
   cursor: pointer;
   display: inline-flex;
@@ -226,17 +226,19 @@ input {
   background: var(--bg-card);
   border: 1px solid var(--border-color-strong);
   color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 1rem;
   transition: color var(--transition-fast), border-color var(--transition-fast),
     background-color var(--transition-fast);
 }
 
-.theme-toggle:hover {
+.icon-btn:hover {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
 }
 
-.theme-toggle:focus-visible {
+.icon-btn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -842,6 +844,200 @@ input {
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: 0.7rem;
+}
+
+/* ==========================================================================
+   Buttons (modal footer actions — filter chips and .icon-btn cover the
+   rest of the app's controls)
+   ========================================================================== */
+
+.btn {
+  appearance: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color-strong);
+  color: var(--text-primary);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--text-muted);
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   Settings modal
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 100;
+  padding: 3rem 1rem;
+  overflow-y: auto;
+}
+
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color-strong);
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100vh - 6rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  background: var(--bg-strip);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-head h2 {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1.1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.modal-foot {
+  padding: 0.85rem 1.1rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.section-title {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin: 1.1rem 0 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-title:first-child {
+  margin-top: 0;
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.settings-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem 0.4rem 0.65rem;
+  background: var(--bg-strip);
+  border: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+
+.settings-list-item-remove {
+  width: 1.4rem;
+  height: 1.4rem;
+  font-size: 0.85rem;
+}
+
+.settings-empty {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.3rem 0;
+}
+
+.settings-add-row {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.settings-add-row input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  border: 1px solid var(--border-color-strong);
+  padding: 0.4rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+
+.settings-add-row input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.field input[type='number'] {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border-color-strong);
+  padding: 0.4rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+
+.field input[type='number']:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.settings-error {
+  margin: 0.6rem 0 0;
+  color: var(--color-bad);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.settings-error[hidden] {
+  display: none;
 }
 
 /* ==========================================================================

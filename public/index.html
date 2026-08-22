@@ -54,7 +54,11 @@
         </div>
       </section>
 
-      <button type="button" id="theme-toggle" class="theme-toggle" aria-pressed="false" aria-label="Switch to light theme">
+      <button type="button" id="settings-toggle" class="icon-btn" aria-label="Open settings">
+        <span aria-hidden="true">&#9881;</span>
+      </button>
+
+      <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-pressed="false" aria-label="Switch to light theme">
         <span class="theme-icon theme-icon-sun" aria-hidden="true">&#9728;</span>
         <span class="theme-icon theme-icon-moon" aria-hidden="true">&#9789;</span>
       </button>
@@ -107,6 +111,43 @@
   <footer class="site-footer">
     <p>Homehost Dashboard &mdash; local status monitor</p>
   </footer>
+
+  <div id="settings-overlay" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="modal-head">
+        <h2 id="settings-title">Settings</h2>
+        <button type="button" class="icon-btn" id="settings-close" aria-label="Close settings">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="section-title">Systemd services</div>
+        <div class="settings-list" id="settings-services-list"></div>
+        <div class="settings-add-row">
+          <input type="text" id="settings-service-input" placeholder="e.g. nginx" autocomplete="off" spellcheck="false" />
+          <button type="button" class="btn" id="settings-service-add">Add</button>
+        </div>
+
+        <div class="section-title">Container filters</div>
+        <div class="settings-list" id="settings-filters-list"></div>
+        <div class="settings-add-row">
+          <input type="text" id="settings-filter-input" placeholder="name or label substring" autocomplete="off" spellcheck="false" />
+          <button type="button" class="btn" id="settings-filter-add">Add</button>
+        </div>
+
+        <div class="section-title">Poll interval (seconds)</div>
+        <div class="field">
+          <input type="number" id="settings-poll-interval" min="0.5" max="300" step="0.5" />
+        </div>
+
+        <p class="settings-error" id="settings-error" hidden></p>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn" id="settings-cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="settings-save">Save</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="app.js"></script>
 </body>

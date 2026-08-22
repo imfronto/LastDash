@@ -43,11 +43,16 @@ add the service user to `adm`) instead of the panel silently failing.
 
 ### Adding services or containers to watch
 
-Edit `server/config.json` — no code changes or restart required, it's re-read on every request:
+Click the gear icon in the header to open **Settings**, where you can add/remove watched systemd
+services and container filters, and change the poll interval, without touching a file. It saves
+via `PUT /api/v1/config`, which validates and rewrites `server/config.json` — no restart needed,
+the rest of the app already re-reads that file on every request.
+
+You can still hand-edit `server/config.json` directly if you'd rather:
 
 ```json
 {
-  "systemd_services": ["nginx", "openvpn", "fail2ban", "ssh"],
+  "systemd_services": ["openvpn", "fail2ban"],
   "container_filters": [],
   "poll_interval_seconds": 3
 }
@@ -57,6 +62,16 @@ Edit `server/config.json` — no code changes or restart required, it's re-read 
 from this file are ever passed to `subprocess` — there is no way to inject arbitrary service names
 through the API. `container_filters` is a free-form array of name/label substrings you can use to
 tag containers of interest; leave it empty to show all containers.
+
+The write endpoint has no effect beyond what's already true of the read side: `systemd_services`
+entries only ever reach a read-only `systemctl is-active <name>` call (passed as a single argv
+element, never shell-interpolated, so this was already injection-safe before it became editable),
+and `container_filters` is purely client-side display filtering. There's no authentication on this
+API (matching its "trusted local network" threat model — see the CORS section below), so anyone
+who can reach the dashboard can change what it watches; they still can't use it to control
+anything. In production, this needs a small write exemption in the deployment hardening: the
+systemd unit's `ReadWritePaths=/opt/homehost-dash/server` and the Docker Compose `config.json`
+bind mount being read-write rather than `:ro` — both already set up for you.
 
 ## Development mode
 

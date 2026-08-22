@@ -23,8 +23,9 @@ services:
       # packages in the image (see Dockerfile). If your host's D-Bus socket
       # lives elsewhere, adjust the left-hand path to match.
       - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket
-      # Hand-editable without rebuilding the image.
-      - ../server/config.json:/app/server/config.json:ro
+      # Read-write: hand-editable without rebuilding the image, and the
+      # Settings UI in the dashboard itself saves here too.
+      - ../server/config.json:/app/server/config.json
       # Optional: only needed for the fail2ban jail-stats panel. fail2ban
       # runs on the host, not in this container, so both its jail configs
       # (to know which jails are enabled) and its log (to count bans) have

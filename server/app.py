@@ -9,9 +9,10 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import docker
 import psutil
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
 
 BASE_DIR = Path(__file__).resolve().parent
 PUBLIC_DIR = BASE_DIR.parent / "public"
@@ -59,7 +60,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=False,
-    allow_methods=["GET"],
+    allow_methods=["GET", "PUT"],
     allow_headers=["*"],
 )
 
@@ -371,6 +372,46 @@ def get_health() -> Dict[str, Any]:
 @app.get("/api/v1/config")
 def get_config() -> Dict[str, Any]:
     return load_config()
+
+
+class ConfigUpdate(BaseModel):
+    systemd_services: List[str] = Field(default_factory=list)
+    container_filters: List[str] = Field(default_factory=list)
+    poll_interval_seconds: float = 3
+
+
+def clean_string_list(items: List[str], max_items: int = 50) -> List[str]:
+    seen = set()
+    cleaned: List[str] = []
+    for item in items:
+        if not isinstance(item, str):
+            continue
+        value = item.strip()
+        if value and value not in seen:
+            seen.add(value)
+            cleaned.append(value)
+        if len(cleaned) >= max_items:
+            break
+    return cleaned
+
+
+@app.put("/api/v1/config")
+def put_config(update: ConfigUpdate) -> Dict[str, Any]:
+    if not (0.5 <= update.poll_interval_seconds <= 300):
+        raise HTTPException(status_code=400, detail="poll_interval_seconds must be between 0.5 and 300")
+
+    new_config: Dict[str, Any] = {
+        "systemd_services": clean_string_list(update.systemd_services),
+        "container_filters": clean_string_list(update.container_filters),
+        "poll_interval_seconds": update.poll_interval_seconds,
+    }
+
+    try:
+        CONFIG_PATH.write_text(json.dumps(new_config, indent=2) + "\n", encoding="utf-8")
+    except OSError as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to save config: {exc}") from exc
+
+    return new_config
 
 
 if PUBLIC_DIR.is_dir():

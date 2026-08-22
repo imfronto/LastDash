@@ -12,18 +12,20 @@ ExecStart=/opt/homehost-dash/venv/bin/uvicorn server.app:app --host 0.0.0.0 --po
 Restart=on-failure
 RestartSec=5
 
-# Hardening: the service only needs to read its own install directory, talk
-# to the Docker socket and read /var/log/fail2ban.log (both via
-# supplementary group membership — "docker" and "adm" respectively, added
-# to the service user by install.sh — rather than an explicit Group=
-# here, since that would make the unit fail to start on a host that
-# doesn't have Docker installed at all and thus has no "docker" group)
-# and shell out to `systemctl is-active` (a read-only query, permitted
-# for non-root callers over D-Bus), so the filesystem can otherwise be
-# locked down.
+# Hardening: the service only needs to read its own install directory
+# (plus write to server/config.json — see ReadWritePaths, for the
+# Settings UI), talk to the Docker socket and read /var/log/fail2ban.log
+# (both via supplementary group membership — "docker" and "adm"
+# respectively, added to the service user by install.sh — rather than an
+# explicit Group= here, since that would make the unit fail to start on
+# a host that doesn't have Docker installed at all and thus has no
+# "docker" group) and shell out to `systemctl is-active` (a read-only
+# query, permitted for non-root callers over D-Bus), so the filesystem
+# can otherwise be locked down.
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
+ReadWritePaths=/opt/homehost-dash/server
 
 [Install]
 WantedBy=multi-user.target
