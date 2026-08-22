@@ -4,7 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homehost // Dashboard</title>
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="dark light" />
+  <script>
+    // Applied synchronously, before first paint, so a saved light-theme
+    // preference never flashes dark on load.
+    (function () {
+      try {
+        var saved = localStorage.getItem('homehost-theme');
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.dataset.theme = saved;
+        }
+      } catch (err) {
+        /* localStorage unavailable (private mode, disabled storage) — fall back to default theme */
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,27 +31,34 @@
       </div>
     </div>
 
-    <section class="health-strip" id="health-strip" aria-label="Host health summary">
-      <div class="health-metric" data-metric="cpu">
-        <span class="health-label">CPU</span>
-        <span class="health-value" id="health-cpu">&#8212;</span>
-        <span class="health-bar"><span class="health-bar-fill" id="health-cpu-bar"></span></span>
-      </div>
-      <div class="health-metric" data-metric="ram">
-        <span class="health-label">RAM</span>
-        <span class="health-value" id="health-ram">&#8212;</span>
-        <span class="health-bar"><span class="health-bar-fill" id="health-ram-bar"></span></span>
-      </div>
-      <div class="health-metric" data-metric="disk">
-        <span class="health-label">DISK</span>
-        <span class="health-value" id="health-disk">&#8212;</span>
-        <span class="health-bar"><span class="health-bar-fill" id="health-disk-bar"></span></span>
-      </div>
-      <div class="health-metric" data-metric="uptime">
-        <span class="health-label">UPTIME</span>
-        <span class="health-value" id="health-uptime">&#8212;</span>
-      </div>
-    </section>
+    <div class="header-controls">
+      <section class="health-strip" id="health-strip" aria-label="Host health summary">
+        <div class="health-metric" data-metric="cpu">
+          <span class="health-label">CPU</span>
+          <span class="health-value" id="health-cpu">&#8212;</span>
+          <span class="health-bar"><span class="health-bar-fill" id="health-cpu-bar"></span></span>
+        </div>
+        <div class="health-metric" data-metric="ram">
+          <span class="health-label">RAM</span>
+          <span class="health-value" id="health-ram">&#8212;</span>
+          <span class="health-bar"><span class="health-bar-fill" id="health-ram-bar"></span></span>
+        </div>
+        <div class="health-metric" data-metric="disk">
+          <span class="health-label">DISK</span>
+          <span class="health-value" id="health-disk">&#8212;</span>
+          <span class="health-bar"><span class="health-bar-fill" id="health-disk-bar"></span></span>
+        </div>
+        <div class="health-metric" data-metric="uptime">
+          <span class="health-label">UPTIME</span>
+          <span class="health-value" id="health-uptime">&#8212;</span>
+        </div>
+      </section>
+
+      <button type="button" id="theme-toggle" class="theme-toggle" aria-pressed="false" aria-label="Switch to light theme">
+        <span class="theme-icon theme-icon-sun" aria-hidden="true">&#9728;</span>
+        <span class="theme-icon theme-icon-moon" aria-hidden="true">&#9789;</span>
+      </button>
+    </div>
   </header>
 
   <div id="error-banner" class="error-banner" role="alert" hidden>

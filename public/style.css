@@ -11,6 +11,7 @@
   --bg-card: #121727;
   --bg-card-hover: #182036;
   --bg-inset: #0b0e18;
+  --bg-glass: rgba(14, 18, 32, 0.72);
   --border-color: #212a42;
   --border-color-strong: #34406866;
   --border-hairline: rgba(255, 255, 255, 0.05);
@@ -27,6 +28,7 @@
   --color-warn-dim: rgba(245, 185, 66, 0.14);
   --color-bad: #ff5d70;
   --color-bad-dim: rgba(255, 93, 112, 0.14);
+  --color-bad-border: rgba(255, 93, 112, 0.35);
   --color-neutral: #6b76a0;
   --color-neutral-dim: rgba(107, 118, 160, 0.14);
 
@@ -61,6 +63,64 @@
   /* -- motion -- */
   --transition-fast: 150ms ease;
   --transition-med: 260ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   Light theme — applied via [data-theme="light"] on <html>, set by the
+   no-flash inline script in index.html and toggled from the header button.
+   Only the tokens change; every rule below reads through them.
+   ========================================================================== */
+
+:root[data-theme='light'] {
+  /* -- surfaces -- */
+  --bg: #f2f4f9;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #eef1f8;
+  --bg-inset: #eaeef6;
+  --bg-glass: rgba(255, 255, 255, 0.78);
+  --border-color: #dbe1ee;
+  --border-color-strong: #b9c3da;
+  --border-hairline: rgba(15, 23, 42, 0.06);
+
+  /* -- text -- */
+  --text-primary: #10192e;
+  --text-secondary: #4c5872;
+  --text-muted: #7c879e;
+
+  /* -- state colors (deepened for contrast on a light surface) -- */
+  --color-good: #128a5c;
+  --color-good-dim: rgba(18, 138, 92, 0.12);
+  --color-warn: #a8690a;
+  --color-warn-dim: rgba(168, 105, 10, 0.12);
+  --color-bad: #d3283f;
+  --color-bad-dim: rgba(211, 40, 63, 0.12);
+  --color-bad-border: rgba(211, 40, 63, 0.3);
+  --color-neutral: #5b6684;
+  --color-neutral-dim: rgba(91, 102, 132, 0.12);
+
+  /* -- glow — neon glows read as muddy smudges on a light surface, so the
+     "glow" here is just a plain shadow-less state color -- */
+  --glow-good: none;
+  --glow-warn: none;
+  --glow-bad: none;
+  --glow-neutral: none;
+
+  /* -- accent (brand) -- */
+  --accent: #0a7f91;
+  --accent-soft: #0891a8;
+  --accent-dim: rgba(10, 127, 145, 0.12);
+  --glow-accent: none;
+
+  /* -- elevation -- */
+  --shadow-sm: 0 1px 2px rgba(16, 25, 46, 0.06);
+  --shadow-md: 0 4px 16px rgba(16, 25, 46, 0.08);
+  --shadow-lg: 0 12px 32px rgba(16, 25, 46, 0.12);
+  --inset-highlight: inset 0 1px 0 rgba(16, 25, 46, 0.03);
+
+  color-scheme: light;
 }
 
 /* ==========================================================================
@@ -138,7 +198,7 @@ input {
   justify-content: space-between;
   gap: var(--gap);
   padding: 1.25rem 1.5rem;
-  background: rgba(14, 18, 32, 0.72);
+  background: var(--bg-glass);
   backdrop-filter: blur(10px) saturate(1.2);
   -webkit-backdrop-filter: blur(10px) saturate(1.2);
   border-bottom: 1px solid var(--border-color);
@@ -189,12 +249,67 @@ input {
   text-transform: lowercase;
 }
 
+/* ---- header controls (health strip + theme toggle) ---- */
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.theme-toggle {
+  appearance: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  transition: color var(--transition-fast), border-color var(--transition-fast),
+    background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--border-color-strong);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.theme-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.theme-icon-moon {
+  display: none;
+}
+
+:root[data-theme='light'] .theme-icon-sun {
+  display: none;
+}
+
+:root[data-theme='light'] .theme-icon-moon {
+  display: inline;
+}
+
 /* ---- health strip ---- */
 
 .health-strip {
   display: flex;
   flex-wrap: wrap;
   gap: 1.75rem;
+  min-width: 0;
 }
 
 .health-metric {
@@ -267,7 +382,7 @@ input {
   margin: 0.75rem 1.5rem 0;
   padding: 0.7rem 1rem;
   background: var(--color-bad-dim);
-  border: 1px solid rgba(255, 93, 112, 0.35);
+  border: 1px solid var(--color-bad-border);
   border-radius: var(--radius-sm);
   color: var(--color-bad);
   font-family: var(--font-mono);
@@ -739,8 +854,12 @@ input {
     align-items: flex-start;
   }
 
-  .health-strip {
+  .header-controls {
     width: 100%;
+    justify-content: space-between;
+  }
+
+  .health-strip {
     justify-content: space-between;
     gap: 1rem;
   }

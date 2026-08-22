@@ -17,6 +17,7 @@ const ENDPOINTS = Object.freeze({
 
 const DEFAULT_POLL_INTERVAL_MS = 3000;
 const FETCH_TIMEOUT_MS = 5000;
+const THEME_STORAGE_KEY = 'homehost-theme';
 
 // Statuses considered "good" / "warn" / "bad" for coloring dots & badges.
 const GOOD_STATES = new Set(['running', 'active']);
@@ -41,6 +42,7 @@ const dom = {
   healthDisk: document.getElementById('health-disk'),
   healthDiskBar: document.getElementById('health-disk-bar'),
   healthUptime: document.getElementById('health-uptime'),
+  themeToggle: document.getElementById('theme-toggle'),
 };
 
 // =============================================================================
@@ -609,10 +611,35 @@ function bindEvents() {
     if (!chip) return;
     setFilterStatus(chip.dataset.filter);
   });
+
+  dom.themeToggle.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = nextTheme;
+    dom.themeToggle.setAttribute('aria-pressed', String(nextTheme === 'light'));
+    dom.themeToggle.setAttribute(
+      'aria-label',
+      nextTheme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'
+    );
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    } catch (err) {
+      // localStorage unavailable (private mode, disabled storage) — theme
+      // choice just won't persist across reloads.
+    }
+  });
+}
+
+/** Syncs the toggle's a11y attributes with whatever theme the inline
+ * no-flash script (in index.html's <head>) already applied. */
+function syncThemeToggleState() {
+  const isLight = document.documentElement.dataset.theme === 'light';
+  dom.themeToggle.setAttribute('aria-pressed', String(isLight));
+  dom.themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
 }
 
 async function init() {
   bindEvents();
+  syncThemeToggleState();
   await loadConfig();
   startPolling();
 }
