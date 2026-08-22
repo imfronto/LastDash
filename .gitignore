@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Logs
+*.log
+logs/
+
+# Environment / secrets
+.env
+.env.*
+*.local.json
+
+# Editor / OS cruft
+.vscode/
+.idea/
+.DS_Store
+
+# Docker
+*.pid
+
+# Claude Code session state
+.claude/scheduled_tasks.lock

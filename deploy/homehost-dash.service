@@ -1,0 +1,25 @@
+[Unit]
+Description=Homehost Dashboard
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=homehost
+Group=docker
+WorkingDirectory=/opt/homehost-dash
+Environment=ALLOWED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+ExecStart=/opt/homehost-dash/venv/bin/uvicorn server.app:app --host 0.0.0.0 --port 8000 --workers 2
+Restart=on-failure
+RestartSec=5
+
+# Hardening: the service only needs to read its own install directory, talk
+# to the Docker socket (via the "docker" group) and shell out to
+# `systemctl is-active` (a read-only query, permitted for non-root callers
+# over D-Bus), so the filesystem can otherwise be locked down.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

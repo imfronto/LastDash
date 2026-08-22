@@ -1,0 +1,25 @@
+services:
+  homehost-dash:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: homehost-dash:latest
+    container_name: homehost-dash
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # Tighten this to your LAN hostname/IP once this leaves localhost, e.g.
+      # ALLOWED_ORIGINS=http://homeserver.lan:8000
+      - ALLOWED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+    volumes:
+      # Read-only: the dashboard only lists/inspects containers, never
+      # starts/stops/creates them.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Needed only for host systemd service checks (nginx/openvpn/fail2ban/
+      # ssh) from inside the container. Requires the "dbus"+"systemd" client
+      # packages in the image (see Dockerfile). If your host's D-Bus socket
+      # lives elsewhere, adjust the left-hand path to match.
+      - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket
+      # Hand-editable without rebuilding the image.
+      - ../server/config.json:/app/server/config.json:ro

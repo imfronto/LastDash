@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homehost // Dashboard</title>
+  <meta name="color-scheme" content="dark" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-glyph" aria-hidden="true">&#9679;</span>
+      <div class="brand-text">
+        <h1 class="brand-title">HOMEHOST</h1>
+        <p class="brand-subtitle">server status dashboard</p>
+      </div>
+    </div>
+
+    <section class="health-strip" id="health-strip" aria-label="Host health summary">
+      <div class="health-metric" data-metric="cpu">
+        <span class="health-label">CPU</span>
+        <span class="health-value" id="health-cpu">&#8212;</span>
+        <span class="health-bar"><span class="health-bar-fill" id="health-cpu-bar"></span></span>
+      </div>
+      <div class="health-metric" data-metric="ram">
+        <span class="health-label">RAM</span>
+        <span class="health-value" id="health-ram">&#8212;</span>
+        <span class="health-bar"><span class="health-bar-fill" id="health-ram-bar"></span></span>
+      </div>
+      <div class="health-metric" data-metric="disk">
+        <span class="health-label">DISK</span>
+        <span class="health-value" id="health-disk">&#8212;</span>
+        <span class="health-bar"><span class="health-bar-fill" id="health-disk-bar"></span></span>
+      </div>
+      <div class="health-metric" data-metric="uptime">
+        <span class="health-label">UPTIME</span>
+        <span class="health-value" id="health-uptime">&#8212;</span>
+      </div>
+    </section>
+  </header>
+
+  <div id="error-banner" class="error-banner" role="alert" hidden>
+    <span class="error-icon" aria-hidden="true">&#9888;</span>
+    <span id="error-message">Unable to reach the Homehost API.</span>
+  </div>
+
+  <main class="dashboard">
+    <section class="filter-bar" aria-label="Filter services and containers">
+      <label class="filter-search" for="filter-text">
+        <span class="filter-search-icon" aria-hidden="true">&#128269;</span>
+        <input
+          type="search"
+          id="filter-text"
+          placeholder="Filter by name&hellip;"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </label>
+
+      <div class="filter-chips" id="filter-chips" role="group" aria-label="Filter by status">
+        <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="chip" data-filter="running" aria-pressed="false">Running</button>
+        <button type="button" class="chip" data-filter="exited" aria-pressed="false">Exited</button>
+        <button type="button" class="chip" data-filter="failed" aria-pressed="false">Failed</button>
+        <button type="button" class="chip" data-filter="active" aria-pressed="false">Active</button>
+        <button type="button" class="chip" data-filter="inactive" aria-pressed="false">Inactive</button>
+      </div>
+    </section>
+
+    <section id="card-grid" class="card-grid" aria-live="polite" aria-label="Containers and services">
+      <!-- Cards injected here by app.js -->
+    </section>
+
+    <p id="empty-state" class="empty-state" hidden>No containers or services match your filter.</p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Homehost Dashboard &mdash; local status monitor</p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

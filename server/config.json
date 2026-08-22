@@ -1,0 +1,5 @@
+{
+  "systemd_services": ["nginx", "openvpn", "fail2ban", "ssh"],
+  "container_filters": [],
+  "poll_interval_seconds": 3
+}
