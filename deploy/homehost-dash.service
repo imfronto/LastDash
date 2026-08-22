@@ -6,7 +6,6 @@ Wants=docker.service
 [Service]
 Type=simple
 User=homehost
-Group=docker
 WorkingDirectory=/opt/homehost-dash
 Environment=ALLOWED_ORIGINS=http://main.lan:8000,http://localhost:8000,http://127.0.0.1:8000
 ExecStart=/opt/homehost-dash/venv/bin/uvicorn server.app:app --host 0.0.0.0 --port 8000 --workers 2
@@ -14,12 +13,14 @@ Restart=on-failure
 RestartSec=5
 
 # Hardening: the service only needs to read its own install directory, talk
-# to the Docker socket (via the "docker" group), read /var/log/fail2ban.log
-# (via the "adm" group — fail2ban's own control socket and ban database
-# are root-only, so this read-only log is the only privilege-free source
-# for jail stats) and shell out to `systemctl is-active` (a read-only
-# query, permitted for non-root callers over D-Bus), so the filesystem
-# can otherwise be locked down.
+# to the Docker socket and read /var/log/fail2ban.log (both via
+# supplementary group membership — "docker" and "adm" respectively, added
+# to the service user by install.sh — rather than an explicit Group=
+# here, since that would make the unit fail to start on a host that
+# doesn't have Docker installed at all and thus has no "docker" group)
+# and shell out to `systemctl is-active` (a read-only query, permitted
+# for non-root callers over D-Bus), so the filesystem can otherwise be
+# locked down.
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
