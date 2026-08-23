@@ -19,11 +19,6 @@ const DEFAULT_POLL_INTERVAL_MS = 3000;
 const FETCH_TIMEOUT_MS = 5000;
 const THEME_STORAGE_KEY = 'homehost-theme';
 
-// Statuses considered "good" / "warn" / "bad" for coloring dots & badges.
-const GOOD_STATES = new Set(['running', 'active']);
-const WARN_STATES = new Set(['paused', 'inactive', 'restarting']);
-const BAD_STATES = new Set(['exited', 'failed', 'dead', 'error']);
-
 // =============================================================================
 // DOM references (cached once at module init)
 // =============================================================================
@@ -67,10 +62,10 @@ const dom = {
 let pollIntervalMs = DEFAULT_POLL_INTERVAL_MS;
 let pollTimerId = null;
 let isPolling = false;
-let activePollController = null;
 
 let filterText = '';
 let filterStatus = 'all';
+let containerFilters = [];
 
 // working copy of the config while the settings modal is open — only
 // written back to the server if the user hits Save
@@ -123,14 +118,6 @@ const formatPorts = (ports) => {
     if (p.host == null) return `${p.container}${proto}`;
     return `${p.host}:${p.container}${proto}`;
   });
-};
-
-const statusLevel = (status) => {
-  const normalized = String(status || '').toLowerCase();
-  if (GOOD_STATES.has(normalized)) return 'good';
-  if (WARN_STATES.has(normalized)) return 'warn';
-  if (BAD_STATES.has(normalized)) return 'bad';
-  return 'neutral';
 };
 
 // =============================================================================
@@ -584,8 +571,16 @@ function renderCards(statusData) {
 // Client-side filtering (name text + status chip), fully instant/offline
 // =============================================================================
 
+/**
+ * A card is visible when it matches the free-text search, the status chip,
+ * and (if any container_filters are configured) at least one of them —
+ * container_filters is a saved allowlist of name/label substrings from
+ * Settings, applied the same way as the text search but persisted server-side.
+ */
 function applyFilters() {
   const needle = filterText.trim().toLowerCase();
+  const savedFilters = containerFilters.map((f) => f.toLowerCase());
+
   let visibleCount = 0;
 
   for (const entry of cardRegistry.values()) {
@@ -594,8 +589,10 @@ function applyFilters() {
     const status = root.dataset.status || 'unknown';
 
     const matchesText = needle === '' || name.includes(needle);
+    const matchesSavedFilters =
+      savedFilters.length === 0 || savedFilters.some((f) => name.includes(f));
     const matchesStatus = filterStatus === 'all' || status === filterStatus;
-    const visible = matchesText && matchesStatus;
+    const visible = matchesText && matchesSavedFilters && matchesStatus;
 
     root.hidden = !visible;
     if (visible) visibleCount += 1;
@@ -619,19 +616,13 @@ function setFilterStatus(status) {
 /**
  * A single poll tick fetches status + health together. `isPolling` guards
  * against a slow request still being in flight when the next interval
- * fires; `activePollController` lets us proactively abort a stale request
- * if one is ever left dangling, so we never race two polls or leak
- * listeners/timers.
+ * fires, so we never race two polls or leak listeners/timers.
  */
 async function pollTick() {
   if (isPolling) return;
   isPolling = true;
 
-  if (activePollController) {
-    activePollController.abort();
-  }
   const controller = new AbortController();
-  activePollController = controller;
 
   try {
     const [rawStatusData, rawHealthData] = await Promise.all([
@@ -801,6 +792,8 @@ async function saveSettings() {
 
     const saved = await response.json();
     pollIntervalMs = saved.poll_interval_seconds * 1000;
+    containerFilters = Array.isArray(saved.container_filters) ? saved.container_filters : [];
+    applyFilters();
     closeSettings();
     startPolling();
   } catch (err) {
@@ -820,6 +813,9 @@ async function loadConfig() {
     const config = await fetchJSON(ENDPOINTS.config, controller.signal);
     if (config && Number.isFinite(config.poll_interval_seconds) && config.poll_interval_seconds > 0) {
       pollIntervalMs = config.poll_interval_seconds * 1000;
+    }
+    if (config && Array.isArray(config.container_filters)) {
+      containerFilters = config.container_filters;
     }
   } catch (err) {
     // Config is a nice-to-have; fall back to the default interval silently
